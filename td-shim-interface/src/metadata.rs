@@ -98,7 +98,7 @@ impl TdxMetadataDescriptor {
     }
 
     pub fn is_valid(&self) -> bool {
-        #[cfg(not(feature = "no-metadata-checks"))]
+        #[cfg(not(feature = "nrx"))]
         if self.signature != TDX_METADATA_SIGNATURE {
             return false;
         }
@@ -243,7 +243,7 @@ pub fn validate_sections(sections: &[TdxMetadataSection]) -> Result<(), TdxMetad
                 if section.raw_data_size == 0 {
                     return Err(TdxMetadataError::InvalidSection);
                 }
-                #[cfg(not(feature = "no-metadata-checks"))]
+                #[cfg(not(feature = "nrx"))]
                 if section.attributes != TDX_METADATA_ATTRIBUTES_EXTENDMR {
                     return Err(TdxMetadataError::InvalidSection);
                 }
@@ -337,7 +337,7 @@ pub fn validate_sections(sections: &[TdxMetadataSection]) -> Result<(), TdxMetad
                 if section.raw_data_size != 0 || section.data_offset != 0 {
                     return Err(TdxMetadataError::InvalidSection);
                 }
-                #[cfg(not(feature = "no-metadata-checks"))]
+                #[cfg(not(feature = "nrx"))]
                 if section.attributes != TDX_METADATA_ATTRIBUTES_PAGE_AUG {
                     return Err(TdxMetadataError::InvalidSection);
                 }
@@ -362,7 +362,7 @@ pub fn validate_sections(sections: &[TdxMetadataSection]) -> Result<(), TdxMetad
                 if payload_cnt > 1 {
                     return Err(TdxMetadataError::InvalidSection);
                 }
-                #[cfg(not(feature = "no-metadata-checks"))]
+                #[cfg(not(feature = "nrx"))]
                 if section.attributes & (!TDX_METADATA_ATTRIBUTES_EXTENDMR) != 0 {
                     return Err(TdxMetadataError::InvalidSection);
                 }

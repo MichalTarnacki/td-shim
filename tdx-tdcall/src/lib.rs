@@ -28,9 +28,9 @@ pub const USE_TDX_EMULATION: bool = true;
 #[cfg(not(feature = "use_tdx_emulation"))]
 pub const USE_TDX_EMULATION: bool = false;
 
-#[cfg(not(feature = "no-tdaccept"))]
+#[cfg(not(feature = "nrx"))]
 pub const TDACCEPT_SUPPORT: bool = true;
-#[cfg(feature = "no-tdaccept")]
+#[cfg(feature = "nrx")]
 pub const TDACCEPT_SUPPORT: bool = false;
 
 pub mod asm;
@@ -42,7 +42,7 @@ const TDCALL_TDINFO: u64 = 1;
 const TDCALL_TDEXTENDRTMR: u64 = 2;
 const TDCALL_TDGETVEINFO: u64 = 3;
 const TDCALL_TDREPORT: u64 = 4;
-#[cfg(not(feature = "no-tdaccept"))]
+#[cfg(not(feature = "nrx"))]
 const TDCALL_TDACCEPTPAGE: u64 = 6;
 const TDCALL_VM_RD: u64 = 7;
 const TDCALL_VM_WR: u64 = 8;
@@ -68,7 +68,7 @@ pub const TDCALL_STATUS_PAGE_ALREADY_ACCEPTED: u64 = 0x00000B0A00000000;
 pub const TDCALL_STATUS_PAGE_SIZE_MISMATCH: u64 = 0xC0000B0B00000001;
 
 cfg_if::cfg_if! {
-    if #[cfg(not(feature = "no-tdvmcall"))] {
+    if #[cfg(not(feature = "nrx"))] {
         // GTDG.VP.VMCALL leaf sub-function numbers
         const TDVMCALL_CPUID: u64 = 0x0000a;
         const TDVMCALL_HALT: u64 = 0x0000c;
@@ -113,7 +113,7 @@ cfg_if::cfg_if! {
 // * R11 - Correspond to each TDG.VP.VMCALL.
 // * R8-R9, R12-R15, RBX, RBP, RDI, RSI - Correspond to each TDG.VP.VMCALL sub-function.
 //
-#[cfg(not(feature = "no-tdvmcall"))]
+#[cfg(not(feature = "nrx"))]
 pub fn td_vmcall(args: &mut TdVmcallArgs) -> u64 {
     unsafe { asm::asm_td_vmcall(args as *mut TdVmcallArgs as *mut c_void, 0) }
 }
@@ -121,7 +121,7 @@ pub fn td_vmcall(args: &mut TdVmcallArgs) -> u64 {
 // An extended public wrapper for use of asm_td_vmcall.
 //
 // `do_sti` is a flag used to determine whether to execute `sti` instruction before `tdcall`
-#[cfg(not(feature = "no-tdvmcall"))]
+#[cfg(not(feature = "nrx"))]
 pub fn td_vmcall_ex(args: &mut TdVmcallArgs, do_sti: bool) -> u64 {
     unsafe { asm::asm_td_vmcall(args as *mut TdVmcallArgs as *mut c_void, do_sti as u64) }
 }
@@ -129,7 +129,7 @@ pub fn td_vmcall_ex(args: &mut TdVmcallArgs, do_sti: bool) -> u64 {
 // An extended public wrapper for use of asm_td_vmcall_ex.
 //
 // `do_sti` is a flag used to determine whether to execute `sti` instruction before `tdcall`
-#[cfg(not(feature = "no-tdvmcall"))]
+#[cfg(not(feature = "nrx"))]
 pub fn td_vmcall_ex2(args: &mut TdVmcallArgsEx, do_sti: bool) -> u64 {
     unsafe { asm::asm_td_vmcall_ex(args as *mut TdVmcallArgsEx as *mut c_void, do_sti as u64) }
 }
@@ -171,7 +171,7 @@ pub struct TdcallArgs {
 
 // Used to pass the values of input/output register when performing TDVMCALL
 // instruction
-#[cfg(not(feature = "no-tdvmcall"))]
+#[cfg(not(feature = "nrx"))]
 #[repr(C)]
 #[derive(Default)]
 pub struct TdVmcallArgs {
@@ -187,7 +187,7 @@ pub struct TdVmcallArgs {
 
 // Used to pass the values of input/output register when performing TDVMCALL
 // instruction
-#[cfg(not(feature = "no-tdvmcall"))]
+#[cfg(not(feature = "nrx"))]
 #[repr(C)]
 #[derive(Default)]
 pub struct TdVmcallArgsEx {
@@ -240,7 +240,7 @@ impl From<u64> for TdCallError {
 ///
 /// Refer to Guest-Host-Communication-Interface(GHCI) for Intel TDX
 /// table 'TDCALL[TDG.VP.VMCALL]- Sub-function Completion-Status Codes'
-#[cfg(not(feature = "no-tdvmcall"))]
+#[cfg(not(feature = "nrx"))]
 #[derive(Debug, PartialEq)]
 pub enum TdVmcallError {
     // TDCALL[TDG.VP.VMCALL] sub-function invocation must be retried
@@ -258,7 +258,7 @@ pub enum TdVmcallError {
     Other,
 }
 
-#[cfg(not(feature = "no-tdvmcall"))]
+#[cfg(not(feature = "nrx"))]
 impl From<u64> for TdVmcallError {
     fn from(val: u64) -> Self {
         match val {

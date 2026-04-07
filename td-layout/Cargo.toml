@@ -8,8 +8,7 @@ license = "BSD-2-Clause-Patent"
 edition = "2018"
 
 [features]
-no-config = []
-no-mailbox = []
+nrx = []
 
 [dependencies]
 scroll = { version = "0.10", default-features = false, features = ["derive"]}

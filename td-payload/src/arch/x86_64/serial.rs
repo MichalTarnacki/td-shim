@@ -18,17 +18,17 @@ pub fn serial_write_string(s: &str) {
 }
 
 #[cfg(any(
-    all(feature = "tdx", not(feature = "no-tdvmcall")),
+    all(feature = "tdx", not(feature = "nrx")),
     not(feature = "tdx")
 ))]
 const SERIAL_IO_PORT: u16 = 0x3F8;
 
-#[cfg(all(feature = "tdx", not(feature = "no-tdvmcall")))]
+#[cfg(all(feature = "tdx", not(feature = "nrx")))]
 fn io_write(byte: u8) {
     tdx_tdcall::tdx::tdvmcall_io_write_8(SERIAL_IO_PORT, byte);
 }
 
-#[cfg(all(feature = "tdx", feature = "no-tdvmcall"))]
+#[cfg(all(feature = "tdx", feature = "nrx"))]
 fn io_write(_byte: u8) {}
 
 #[cfg(not(feature = "tdx"))]

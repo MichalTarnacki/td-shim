@@ -86,7 +86,7 @@ pub fn dbg_write_string(s: &str) {
     all(
         feature = "tdx",
         not(feature = "tdg_dbg"),
-        not(feature = "no-tdvmcall")
+        not(feature = "nrx")
     ),
     all(not(feature = "tdx"), feature = "serial-port")
 ))]
@@ -98,17 +98,17 @@ fn dbg_port_write(byte: u8) {
     tdx_tdcall::tdx::tdcall_tdg_debug_write_8(byte);
 }
 
-// tdx, !tdg_dbg, no-tdvmcall
-#[cfg(all(feature = "tdx", not(feature = "tdg_dbg"), feature = "no-tdvmcall"))]
+// tdx, !tdg_dbg, nrx
+#[cfg(all(feature = "tdx", not(feature = "tdg_dbg"), feature = "nrx"))]
 fn dbg_port_write(_byte: u8) {
-    // no-tdvmcall but tdx present, skip port write
+    // nrx: skip port write
 }
 
-// tdx, !tdg_dbg, !no-tdvmcall
+// tdx, !tdg_dbg, !nrx
 #[cfg(all(
     feature = "tdx",
     not(feature = "tdg_dbg"),
-    not(feature = "no-tdvmcall")
+    not(feature = "nrx")
 ))]
 fn dbg_port_write(byte: u8) {
     tdx_tdcall::tdx::tdvmcall_io_write_8(SERIAL_IO_PORT, byte);

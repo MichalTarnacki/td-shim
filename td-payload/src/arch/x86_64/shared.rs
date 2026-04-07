@@ -2,15 +2,15 @@
 //
 // SPDX-License-Identifier: BSD-2-Clause-Patent
 
-#[cfg(not(feature = "no-tdaccept"))]
+#[cfg(not(feature = "nrx"))]
 use crate::mm::SIZE_4K;
 
-#[cfg(not(all(feature = "no-tdvmcall", feature = "no-tdaccept")))]
+#[cfg(not(feature = "nrx"))]
 use tdx_tdcall::tdx;
 
 use super::paging::{clear_shared_bit, set_shared_bit};
 
-#[cfg(not(feature = "no-tdvmcall"))]
+#[cfg(not(feature = "nrx"))]
 pub fn decrypt(addr: u64, length: usize) {
     set_shared_bit(addr, length);
 
@@ -20,7 +20,7 @@ pub fn decrypt(addr: u64, length: usize) {
     }
 }
 
-#[cfg(not(feature = "no-tdvmcall"))]
+#[cfg(not(feature = "nrx"))]
 pub fn encrypt(addr: u64, length: usize) {
     clear_shared_bit(addr, length);
 
@@ -28,23 +28,21 @@ pub fn encrypt(addr: u64, length: usize) {
     if tdx_tdcall::tdx::tdvmcall_mapgpa(false, addr, length).is_err() {
         panic!("Fail to map GPA to private memory with TDVMCALL");
     }
-    #[cfg(not(feature = "no-tdaccept"))]
+    #[cfg(not(feature = "nrx"))]
     accept_memory(addr, length);
 }
 
-#[cfg(feature = "no-tdvmcall")]
+#[cfg(feature = "nrx")]
 pub fn decrypt(addr: u64, length: usize) {
     set_shared_bit(addr, length);
 }
 
-#[cfg(feature = "no-tdvmcall")]
+#[cfg(feature = "nrx")]
 pub fn encrypt(addr: u64, length: usize) {
     clear_shared_bit(addr, length);
-    #[cfg(not(feature = "no-tdaccept"))]
-    accept_memory(addr, length);
 }
 
-#[cfg(not(feature = "no-tdaccept"))]
+#[cfg(not(feature = "nrx"))]
 fn accept_memory(addr: u64, length: usize) {
     let page_num = length / SIZE_4K;
 

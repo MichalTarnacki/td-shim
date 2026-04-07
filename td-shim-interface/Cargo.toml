@@ -18,4 +18,4 @@ zerocopy = { version = "=0.8.27", features = ["derive"] }
 log = "0.4.13"
 
 [features]
-no-metadata-checks = []
+nrx = []

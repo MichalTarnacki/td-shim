@@ -5,14 +5,14 @@ use core::arch::global_asm;
 
 global_asm!(include_str!("msr64.asm"));
 
-#[cfg(not(feature = "no-tdvmcall"))]
+#[cfg(not(feature = "nrx"))]
 global_asm!(include_str!("ap_loop.asm"));
-#[cfg(not(feature = "no-tdvmcall"))]
+#[cfg(not(feature = "nrx"))]
 global_asm!(include_str!("exception.asm"));
 
-#[cfg(feature = "no-tdvmcall")]
+#[cfg(feature = "nrx")]
 global_asm!(include_str!("ap_loop_notdvmcall.asm"));
-#[cfg(feature = "no-tdvmcall")]
+#[cfg(feature = "nrx")]
 global_asm!(include_str!("exception_notdvmcall.asm"));
 
 extern "C" {

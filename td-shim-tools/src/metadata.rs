@@ -142,7 +142,7 @@ fn basic_metadata_sections(payload_type: PayloadType) -> MetadataSections {
     });
 
     // CFV
-    #[cfg(not(feature = "no-config"))]
+    #[cfg(not(feature = "nrx"))]
     metadata_sections.add(TdxMetadataSection {
         data_offset: TD_SHIM_CONFIG_OFFSET,
         raw_data_size: TD_SHIM_CONFIG_SIZE,

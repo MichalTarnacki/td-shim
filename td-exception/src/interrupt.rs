@@ -353,7 +353,7 @@ fn virtualization(stack: &mut InterruptStack) {
     // Firstly get VE information from TDX module, halt it error occurs
     let ve_info = tdx::tdcall_get_ve_info().expect("#VE handler: fail to get VE info\n");
 
-    #[cfg(not(feature = "no-tdvmcall"))]
+    #[cfg(not(feature = "nrx"))]
     match ve_info.exit_reason {
         EXIT_REASON_HLT => {
             tdx::tdvmcall_halt();
@@ -398,7 +398,7 @@ fn virtualization(stack: &mut InterruptStack) {
         }
     };
 
-    #[cfg(feature = "no-tdvmcall")]
+    #[cfg(feature = "nrx")]
     match ve_info.exit_reason {
         EXIT_REASON_HLT
         | EXIT_REASON_IO_INSTRUCTION
@@ -479,7 +479,7 @@ fn virtualization(stack: &mut InterruptStack) {
 //
 // Use TDVMCALL to realize IO read/write operation
 // Return false if VE info is invalid
-#[cfg(all(feature = "tdx", not(feature = "no-tdvmcall")))]
+#[cfg(all(feature = "tdx", not(feature = "nrx")))]
 fn handle_tdx_ioexit(ve_info: &tdx::TdVeInfo, stack: &mut InterruptStack) -> bool {
     let size = ((ve_info.exit_qualification & 0x7) + 1) as usize; // 0 - 1bytes, 1 - 2bytes, 3 - 4bytes
     let read = (ve_info.exit_qualification >> 3) & 0x1 == 1;
